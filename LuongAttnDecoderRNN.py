@@ -1,5 +1,5 @@
 import tensorflow as tf
-from tensorflow.keras.layers import Dense
+from tensorflow.keras.layers import Dense, GRU
 from ECMWrapper import *
 
 class LuongAttnDecoderRNN(nn.Module):
@@ -22,7 +22,7 @@ class LuongAttnDecoderRNN(nn.Module):
         # dimension
         self.gru = tf.keras.layers.GRU()
         for i in range(n_layers):
-            self.gru.add(hidden_size, dropout=(0 if n_layers == 1 else dropout))
+            self.gru.add(GRU(hidden_size, dropout=(0 if n_layers == 1 else dropout)))
         self.concat = Dense(hidden_size, input_shape=hidden_size * 2)
         self.out = Dense(output_size, input_shape=hidden_size)
 
@@ -52,3 +52,11 @@ class LuongAttnDecoderRNN(nn.Module):
         output = tf.nn.softmax(output, axis=1)
         # Return output and final hidden state
         return output, hidden, new_M_emo, context
+
+
+# def maskNLLLoss_IMemory(inp, target, mask,M_emo):
+#     nTotal = mask.sum()
+#     crossEntropy = -tf.log(tf.gather(inp, 1, target.view(-1, 1)).squeeze(1))
+#     loss = crossEntropy.masked_select(mask).sum() + tf.norm(M_emo)
+#     loss = loss.to(device)
+#     return loss, nTotal.item()
