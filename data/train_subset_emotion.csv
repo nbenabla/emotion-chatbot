@@ -1,6 +1,6 @@
 conv_id,utterance_idx,context,prompt,utterance,response_context
 hit:0_conv:1,1,sentimental,I remember going to the fireworks with my best friend. There was a lot of people_comma_ but it only felt like us in the world.,I remember going to see the fireworks with my best friend. It was the first time we ever spent time alone together. Although there was a lot of people_comma_ we felt like the only people in the world.,nostalgic
-hit:0_conv:1,2,sentimental,I remember going to the fireworks with my best friend. There was a lot of people_comma_ but it only felt like us in the world.,Was this a friend you were in love with_comma_ or just a best friend?,sentimal
+hit:0_conv:1,2,sentimental,I remember going to the fireworks with my best friend. There was a lot of people_comma_ but it only felt like us in the world.,Was this a friend you were in love with_comma_ or just a best friend?,sentimental
 hit:0_conv:1,3,sentimental,I remember going to the fireworks with my best friend. There was a lot of people_comma_ but it only felt like us in the world.,This was a best friend. I miss her.,nostalgic
 hit:0_conv:1,4,sentimental,I remember going to the fireworks with my best friend. There was a lot of people_comma_ but it only felt like us in the world.,Where has she gone?,caring
 hit:0_conv:1,5,sentimental,I remember going to the fireworks with my best friend. There was a lot of people_comma_ but it only felt like us in the world.,We no longer talk.,sad
@@ -139,7 +139,7 @@ hit:18_conv:36,1,guilty,I broke a statuette offered by grandmother to my sister.
 hit:18_conv:36,2,guilty,I broke a statuette offered by grandmother to my sister.,Is it not better you replace it with same type of statuette_comma_at a grocery store?,surprised
 hit:18_conv:36,3,guilty,I broke a statuette offered by grandmother to my sister.,No_comma_ it is not possible. It is old statuette given by the mother of my grandmother.,caring
 hit:18_conv:36,4,guilty,I broke a statuette offered by grandmother to my sister.,The mother of your grand mother _comma_that means your great grand mother ! Well you can search through her archives,impressed
-hit:18_conv:37,1,furious,I ordered for French fries _comma_bit was served burger_comma_that pissed me off!,I could not tolerate the waiters insensitivity_comma_that's poor service indeed!,Furious
+hit:18_conv:37,1,furious,I ordered for French fries _comma_bit was served burger_comma_that pissed me off!,I could not tolerate the waiters insensitivity_comma_that's poor service indeed!,furious
 hit:18_conv:37,2,furious,I ordered for French fries _comma_bit was served burger_comma_that pissed me off!,What happened?,caring
 hit:18_conv:37,3,furious,I ordered for French fries _comma_bit was served burger_comma_that pissed me off!,Imagine _comma_I requested a French fries _comma_but was served burger instead!,caring
 hit:18_conv:37,4,furious,I ordered for French fries _comma_bit was served burger_comma_that pissed me off!,It is very bad service. What did you do? Did you complain to the manager?,angry
@@ -627,7 +627,7 @@ hit:75_conv:151,3,hopeful,I bought a lottery ticket and was hopeful I would win.
 hit:75_conv:151,4,hopeful,I bought a lottery ticket and was hopeful I would win.,Well_comma_ you never know. It's nice to think what you can do with the money though.,hopeful
 hit:76_conv:152,1,sad,My birthday was last weekend_comma_ and no one wished me a Happy Birthday.,My birthday was last weekend_comma_ and no one wished me a Happy Birthday.,proud
 hit:76_conv:152,2,sad,My birthday was last weekend_comma_ and no one wished me a Happy Birthday.,I'm so sorry to hear that. How sad for you.,furious
-hit:76_conv:152,3,sad,My birthday was last weekend_comma_ and no one wished me a Happy Birthday.,It is. I've been absorbed in work for the last 3 years and haven't gone out. So I guess everyone kinda moved on without me.,Sad
+hit:76_conv:152,3,sad,My birthday was last weekend_comma_ and no one wished me a Happy Birthday.,It is. I've been absorbed in work for the last 3 years and haven't gone out. So I guess everyone kinda moved on without me.,sad
 hit:76_conv:152,4,sad,My birthday was last weekend_comma_ and no one wished me a Happy Birthday.,Did he ditch you as well? And how did the girlfriend react?,afraid
 hit:76_conv:153,1,surprised,I was thrown a surprise party for my 30th birthday.,For my 30th birthday_comma_ my family and friends got together and threw me a surprise birthday party.,caring
 hit:76_conv:153,2,surprised,I was thrown a surprise party for my 30th birthday.,Very nice! Where was the party?,annoyed
@@ -790,9 +790,9 @@ hit:94_conv:188,2,prepared,I went to class and I brought extra supplies since I 
 hit:94_conv:188,3,prepared,I went to class and I brought extra supplies since I knew we had a test.,No we are allowed to bring notes it was just a surprise test. I felt happy about being able to bring mine.,joyful
 hit:94_conv:188,4,prepared,I went to class and I brought extra supplies since I knew we had a test.,That's good. How did you do?,caring
 hit:94_conv:188,5,prepared,I went to class and I brought extra supplies since I knew we had a test.,I got a A! the highest score in the class.,proud
-hit:94_conv:189,1,sad,I was sad when my grandma died.,My grandma died. I am so sad.,Sad
+hit:94_conv:189,1,sad,I was sad when my grandma died.,My grandma died. I am so sad.,sad
 hit:94_conv:189,2,sad,I was sad when my grandma died.,Im sorry to hear that. Was it from age or complications?,caring
-hit:94_conv:189,3,sad,I was sad when my grandma died.,Age but she also smoked.,Sad
+hit:94_conv:189,3,sad,I was sad when my grandma died.,Age but she also smoked.,sad
 hit:94_conv:189,4,sad,I was sad when my grandma died.,Yeah that is not good. But everyone does have a time to go you know?,caring
 hit:95_conv:191,1,afraid,When I was little_comma_ I was afraid of the dark.,I use to hate the dark when I was little.,afraid
 hit:95_conv:191,2,afraid,When I was little_comma_ I was afraid of the dark.,were you afraid of the dark?,jealous
@@ -1117,7 +1117,7 @@ hit:138_conv:276,1,guilty,I feel bad I stole the cookie.,I feel bad I stole a co
 hit:138_conv:276,2,guilty,I feel bad I stole the cookie.,oh no. Did you get rid of the evidence?,afraid
 hit:138_conv:276,3,guilty,I feel bad I stole the cookie.,Yes. I ate it quick.,caring
 hit:138_conv:276,4,guilty,I feel bad I stole the cookie.,who's cookies were they?,caring
-hit:138_conv:277,1,joyful,I passed all of my classes last semester. I had been struggling in college for a while.,I had been doing poorly in college for a while.,Sad
+hit:138_conv:277,1,joyful,I passed all of my classes last semester. I had been struggling in college for a while.,I had been doing poorly in college for a while.,sad
 hit:138_conv:277,2,joyful,I passed all of my classes last semester. I had been struggling in college for a while.,Do you study?,anticipating
 hit:138_conv:277,3,joyful,I passed all of my classes last semester. I had been struggling in college for a while.,I do now. I passed all of my classes last semester_comma_ so I think I;m back on track.,proud
 hit:138_conv:277,4,joyful,I passed all of my classes last semester. I had been struggling in college for a while.,Thats good. Where do you go?,caring
@@ -1161,7 +1161,7 @@ hit:144_conv:288,4,furious,I was very furious the other day when someone scratch
 hit:144_conv:288,5,furious,I was very furious the other day when someone scratched the backend of my car.,Thank you_comma_ I really appreciate that. Makes the situation a little more bearable. ,grateful
 hit:144_conv:289,1,sad,"I really got close with a girl that I met from Tinder_comma_ to the point where we were ""dating"". Then randomly_comma_ after like 4 days_comma_ she says that she doesn't want to date anymore and then just stops talking to me.",I'm still kinda bummed about this_comma_ but like a month or more back I was really into this girl from Tinder and we started dating too. Unfortunately_comma_ after like 4 or 5 days_comma_ she said she wanted to stop dating and hasn't spoken to me since.,devastated
 hit:144_conv:289,2,sad,"I really got close with a girl that I met from Tinder_comma_ to the point where we were ""dating"". Then randomly_comma_ after like 4 days_comma_ she says that she doesn't want to date anymore and then just stops talking to me.",Oh no_comma_ that really sucks. That's awful that she wanted to end things_comma_ especially since you were really into her. I am sorry.,caring
-hit:144_conv:289,3,sad,"I really got close with a girl that I met from Tinder_comma_ to the point where we were ""dating"". Then randomly_comma_ after like 4 days_comma_ she says that she doesn't want to date anymore and then just stops talking to me.",It's fine_comma_ I'm feeling a lot better about it. The thing that irks me is that she went from super happy about dating to literally ending it and ghosting me in so little time. Makes me think it was all fake_comma_ but I can't think why she would do it.,Sad
+hit:144_conv:289,3,sad,"I really got close with a girl that I met from Tinder_comma_ to the point where we were ""dating"". Then randomly_comma_ after like 4 days_comma_ she says that she doesn't want to date anymore and then just stops talking to me.",It's fine_comma_ I'm feeling a lot better about it. The thing that irks me is that she went from super happy about dating to literally ending it and ghosting me in so little time. Makes me think it was all fake_comma_ but I can't think why she would do it.,sad
 hit:144_conv:289,4,sad,"I really got close with a girl that I met from Tinder_comma_ to the point where we were ""dating"". Then randomly_comma_ after like 4 days_comma_ she says that she doesn't want to date anymore and then just stops talking to me.",That's really odd_comma_ and unfortunate. Thankfully there are many more girls that would match you better :) Don't lose hope!,hopeful
 hit:145_conv:290,1,confident,We recently went on vacation with some friends to Disney world.  They had never been before and we are annual passholders so we have been several times over the last year.,We had a really good time on our vacation a couple of weeks ago.,excited
 hit:145_conv:290,2,confident,We recently went on vacation with some friends to Disney world.  They had never been before and we are annual passholders so we have been several times over the last year.,Thats sound nice. I went on vacation to Thailand last week. What did you do?,surprised
