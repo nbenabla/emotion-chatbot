@@ -2,8 +2,9 @@ import tensorflow as tf
 from tensorflow.keras.layers import Dense, GRU
 from ECMWrapper import *
 
-class LuongAttnDecoderRNN(nn.Module):
-    def __init__(self, attn_model, embedding,emotion_embedding, hidden_size, output_size, n_layers=1, dropout=0.1,num_emotions = 7):
+
+class LuongAttnDecoderRNN(tf.Module):
+    def __init__(self, attn_model, embedding, emotion_embedding, hidden_size, output_size, n_layers=1, dropout=0.1, num_emotions=7):
         super(LuongAttnDecoderRNN, self).__init__()
 
         # Keep for reference
@@ -22,21 +23,22 @@ class LuongAttnDecoderRNN(nn.Module):
         # dimension
         self.gru = tf.keras.layers.GRU()
         for i in range(n_layers):
-            self.gru.add(GRU(hidden_size, dropout=(0 if n_layers == 1 else dropout)))
+            self.gru.add(GRU(hidden_size, dropout=(
+                0 if n_layers == 1 else dropout)))
         self.concat = Dense(hidden_size, input_shape=hidden_size * 2)
         self.out = Dense(output_size, input_shape=hidden_size)
 
         self.attn = Attn(attn_model, hidden_size)
-        self.internal_memory = ECMWrapper(hidden_size,hidden_size,
-                                          hidden_size,self.num_emotions,
-                                          self.embedding,self.emotion_embedding,self.gru)
-    def forward(self, input_step,input_step_emotion, last_hidden
-                ,input_context, last_int_memory,encoder_outputs):
+        self.internal_memory = ECMWrapper(hidden_size, hidden_size,
+                                          hidden_size, self.num_emotions,
+                                          self.embedding, self.emotion_embedding, self.gru)
+
+    def forward(self, input_step, input_step_emotion, last_hidden, input_context, last_int_memory, encoder_outputs):
         '''
         First input_context will be a random vectors
         '''
-        rnn_output, hidden, new_M_emo = self.internal_memory(input_step,input_step_emotion,
-                                                            last_hidden,input_context,
+        rnn_output, hidden, new_M_emo = self.internal_memory(input_step, input_step_emotion,
+                                                             last_hidden, input_context,
                                                              last_int_memory)
         # Calculate attention weights from the current GRU output
         attn_weights = self.attn(rnn_output, encoder_outputs)
