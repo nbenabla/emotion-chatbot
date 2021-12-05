@@ -5,6 +5,23 @@ import random
 import warnings
 warnings.simplefilter(action='ignore', category=FutureWarning)
 import tensorflow as tf
+import torch
+from torch.jit import script, trace
+import torch.nn as nn
+from torch import optim
+import torch.nn.functional as F
+import csv
+import random
+import re
+import os
+import unicodedata
+import codecs
+from io import open
+import itertools
+import math
+import time
+import json
+import numpy as np
 
 
 df = pd.read_csv("train_subset_emotion.csv", error_bad_lines=False, warn_bad_lines=False) 
@@ -142,24 +159,6 @@ def get_data():
 
 get_data()
 
-
-import torch
-from torch.jit import script, trace
-import torch.nn as nn
-from torch import optim
-import torch.nn.functional as F
-import csv
-import random
-import re
-import os
-import unicodedata
-import codecs
-from io import open
-import itertools
-import math
-import time
-import json
-import numpy as np
 
 PAD_token = 0  # Used for padding short sentences
 SOS_token = 1  # Start-of-sentence token
