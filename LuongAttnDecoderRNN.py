@@ -21,10 +21,9 @@ class LuongAttnDecoderRNN(tf.Module):
         self.embedding_dropout = tf.nn.Dropout(dropout)
         #self.emotion_embedding_dropout = nn.Dropout(dropout)
         # dimension
-        self.gru = tf.keras.layers.GRU()
         for i in range(n_layers):
-            self.gru.add(GRU(hidden_size, dropout=(
-                0 if n_layers == 1 else dropout)))
+            self.gru = tf.keras.layers.GRU(hidden_size, dropout=(
+                0 if n_layers == 1 else dropout), return_sequences=True)
         self.concat = Dense(hidden_size, input_shape=hidden_size * 2)
         self.out = Dense(output_size, input_shape=hidden_size)
 
@@ -56,9 +55,9 @@ class LuongAttnDecoderRNN(tf.Module):
         return output, hidden, new_M_emo, context
 
 
-# def maskNLLLoss_IMemory(inp, target, mask,M_emo):
-#     nTotal = mask.sum()
-#     crossEntropy = -tf.log(tf.gather(inp, 1, target.view(-1, 1)).squeeze(1))
-#     loss = crossEntropy.masked_select(mask).sum() + tf.norm(M_emo)
-#     loss = loss.to(device)
-#     return loss, nTotal.item()
+def maskNLLLoss_IMemory(inp, target, mask,M_emo):
+    nTotal = mask.sum()
+    crossEntropy = -tf.log(tf.gather(inp, 1, target.view(-1, 1)).squeeze(1))
+    loss = crossEntropy.masked_select(mask).sum() + tf.norm(M_emo)
+    loss = loss.to(device)
+    return loss, nTotal.item()

@@ -11,9 +11,8 @@ class EncoderRNN(tf.Module):
 
         # Initialize GRU; the input_size and hidden_size params are both set to 'hidden_size'
         #   because our input size is a word embedding with number of features == hidden_size
-        self.gru = tf.keras.layers.GRU()
         for i in range(n_layers):
-            self.gru.add(Bidirectional(GRU(hidden_size, dropout=(0 if n_layers == 1 else dropout))))
+            self.gru = tf.keras.layers.Bidirectional(GRU(hidden_size, dropout=(0 if n_layers == 1 else dropout), return_sequences=True))
 
     def forward(self, input_seq, input_lengths, hidden=None):
         # Convert word indexes to embeddings
