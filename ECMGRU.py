@@ -37,7 +37,7 @@ class ECMGRU(tf.Module):
         internal_memory: decayed emotion embedding vector
         '''
         # compute based on the first layer
-        hidden_0 = last_hidden[0].unsqueeze(dim = 0)
+        hidden_0 = tf.expand_dims(last_hidden[0], axis= 0)
         internal_memory = internal_memory.squeeze(dim = 0)
         emotion_input = tf.concat([emotion,internal_memory],-1)
         # compute emotion gate value
