@@ -26,7 +26,7 @@ from data_utils import *
 
 
 
-df = pd.read_csv("train_subset_emotion.csv", error_bad_lines=False, warn_bad_lines=False) 
+df = pd.read_csv("subset_emotion.csv", error_bad_lines=False, warn_bad_lines=False) 
 
 # if (utterance contains "hit:") delete row
 df.drop(df[df['utterance'].str.contains("hit:")].index, inplace = True)

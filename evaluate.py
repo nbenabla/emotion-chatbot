@@ -1,5 +1,6 @@
 import tensorflow as tf
 import os
+import numpy as np
 
 from helper import *
 
@@ -11,13 +12,10 @@ def evaluate(encoder, decoder, searcher, voc, sentence, emotions, max_length=MAX
     # words -> indexes
     indexes_batch = [indexesFromSentence(voc, sentence)]
     # Create lengths tensor
-    lengths = tf.Variable([len(indexes) for indexes in indexes_batch])
+    lengths = tf.convert_to_tensor([len(indexes) for indexes in indexes_batch], dtype=np.int32)
     # Transpose dimensions of batch to match models' expectations
-    input_batch = tf.Variable(indexes_batch, dtype=tf.int64).transpose(0, 1)
-    # Use appropriate device
-    input_batch = input_batch.to(device)
-    lengths = lengths.to(device)
-    emotions = emotions.to(device)
+    input_batch = tf.transpose(tf.Variable(indexes_batch, dtype=tf.int64), (0,1))
+    
 
     # indexes -> words
     if beam_search:

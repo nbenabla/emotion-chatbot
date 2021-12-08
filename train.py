@@ -1,8 +1,6 @@
 import tensorflow as tf
 import numpy as np
-
 import random
-
 from helper import *
 from maskNLLoss import *
 
@@ -12,17 +10,10 @@ def compute_perplexity(loss):
 def train(input_variable, lengths, target_variable,target_variable_emotion,
           mask, max_target_len, encoder, decoder, embedding, emotion_embedding,
           encoder_optimizer, decoder_optimizer, batch_size, clip, max_length=MAX_LENGTH):
-    # Zero gradients
-    encoder_optimizer.zero_grad()
-    decoder_optimizer.zero_grad()
+    
     # num_samples in this batch
     num_samples = input_variable.shape[1]
-    # Set device options
-    input_variable = input_variable.to(device)
-    lengths = lengths.to(device)
-    target_variable = target_variable.to(device)
-    mask = mask.to(device)
-    target_variable_emotion = target_variable_emotion.to(device)
+    
     # Initialize variables
     loss = 0
     print_losses = []
@@ -33,8 +24,7 @@ def train(input_variable, lengths, target_variable,target_variable_emotion,
     encoder_outputs, encoder_hidden = encoder(input_variable, lengths)
 
     # Create initial decoder input (start with SOS tokens for each sentence)
-    decoder_input = tf.Variable([[SOS_token for _ in range(num_samples)]], dtype=tf.int64)
-    decoder_input = decoder_input.to(device)
+    decoder_input = tf.convert_to_tensor([[SOS_token for _ in range(num_samples)]], dtype=tf.int64)
     
     # Set initial decoder hidden state to the encoder's final hidden state
     decoder_hidden = encoder_hidden[:decoder.n_layers]
@@ -50,7 +40,6 @@ def train(input_variable, lengths, target_variable,target_variable_emotion,
     rnn_output = None
     # keep a copy of emotional category for static emotion embedding
     static_emotion = target_variable_emotion
-    static_emotion = static_emotion.to(device)
     # Forward batch of sequences through decoder one time step at a time
     if use_teacher_forcing:
         for t in range(max_target_len):
@@ -73,10 +62,9 @@ def train(input_variable, lengths, target_variable,target_variable_emotion,
                 context_input,encoder_outputs,rnn_output
             )
             # No teacher forcing: next input is decoder's own current output
-            _, topi = decoder_output.topk(1)
-            topi = topi.squeeze(0)
-            decoder_input = tf.Variable([[topi[i][0] for i in range(num_samples)]], dtype=tf.int64)
-            decoder_input = decoder_input.to(device)
+            _, topi = tf.math.top_k(decoder_output, k=1)
+            topi = tf.squeeze(topi,axis=0)
+            decoder_input = tf.convert_to_tensor([[topi[i][0] for i in range(num_samples)]], dtype=tf.int64)
             # Calculate and accumulate loss
             mask_loss, nTotal,crossEntropy = maskNLLLoss_IMemory(decoder_output, target_variable[t], mask[t], target_variable_emotion, decoder.external_memory, g)
             loss += mask_loss
@@ -86,18 +74,17 @@ def train(input_variable, lengths, target_variable,target_variable_emotion,
 
     # Perform backpropagation
     try:
-        loss.backward()
+        with tf.GradientTape() as tape:
+            gradients = tape.gradient(loss, model.trainable_variables)
+            model.optimizer.apply_gradients(zip(gradients, model.trainable_variables))
+
     except Exception:
         print(input_variable)
         print(target_variable)
 
-    # Clip gradients: gradients are modified in place
-    _ = torch.nn.utils.clip_grad_norm_(encoder.parameters(), clip) 
-    _ = torch.nn.utils.clip_grad_norm_(decoder.parameters(), clip) 
+  
 
-    # Adjust model weights
-    encoder_optimizer.step()
-    decoder_optimizer.step()
+    
     #print('Total Loss {}; Cross Entropy: {}'.format(sum(print_losses) / n_totals, totalCrossEntropy / n_totals))
     return sum(print_losses) / n_totals,totalCrossEntropy / n_totals
 
@@ -109,12 +96,7 @@ def evaluate_performance(input_variable, lengths, target_variable,target_variabl
     decoder.eval()
     # num_samples in this batch
     num_samples = input_variable.shape[1]
-    # Set device options
-    input_variable = input_variable.to(device)
-    lengths = lengths.to(device)
-    target_variable = target_variable.to(device)
-    mask = mask.to(device)
-    target_variable_emotion = target_variable_emotion.to(device)
+   
     # Initialize variables
     loss = 0
     print_losses = []
@@ -124,18 +106,16 @@ def evaluate_performance(input_variable, lengths, target_variable,target_variabl
     encoder_outputs, encoder_hidden = encoder(input_variable, lengths)
 
     # Create initial decoder input (start with SOS tokens for each sentence)
-    decoder_input = tf.Variable([[SOS_token for _ in range(num_samples)]], dtype=tf.int64)
-    decoder_input = decoder_input.to(device)
+    decoder_input = tf.convert_to_tensor([[SOS_token for _ in range(num_samples)]], dtype=tf.int64)
     
     # Set initial decoder hidden state to the encoder's final hidden state
     decoder_hidden = encoder_hidden[:decoder.n_layers]
     # Set initial context value,last_rnn_output, internal_memory
-    context_input = tf.zeros((num_samples,hidden_size), dtype=tf.float32, device=device) 
+    context_input = tf.zeros((num_samples,hidden_size), dtype=tf.float32) 
     # initial value for rnn output
     rnn_output = None
     # keep a copy of emotional category for static emotion embedding
     static_emotion = target_variable_emotion
-    static_emotion = static_emotion.to(device)
     # forward pass to generate all sentences
     for t in range(max_target_len):
         decoder_output, decoder_hidden ,target_variable_emotion, context_input, rnn_output, g = decoder(
@@ -143,19 +123,17 @@ def evaluate_performance(input_variable, lengths, target_variable,target_variabl
             context_input, encoder_outputs, rnn_output
         )
         # No teacher forcing: next input is decoder's own current output
-        _, topi = decoder_output.topk(1)
-        topi = topi.squeeze(0)
-        decoder_input = tf.LongTensor([[topi[i][0] for i in range(num_samples)]])
-        decoder_input = decoder_input.to(device)
+        _, topi = tf.math.top_k(decoder_output, k=1)
+        topi = tf.squeeze(topi,axis=0)
+        decoder_input = tf.convert_to_tensor([[topi[i][0] for i in range(num_samples)]],dtype=np.int32)
+
         # Calculate and accumulate loss
         mask_loss, nTotal,crossEntropy = maskNLLLoss_IMemory(decoder_output, target_variable[t], mask[t], target_variable_emotion, decoder.external_memory, g)
         loss += mask_loss
         totalCrossEntropy += (crossEntropy * nTotal)
         print_losses.append(mask_loss.item() * nTotal) # print average loss
         n_totals += nTotal
-    # back to train mode
-    encoder.train()
-    decoder.train()
+   
     return sum(print_losses) / n_totals, totalCrossEntropy / n_totals
 
 
