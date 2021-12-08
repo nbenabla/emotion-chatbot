@@ -1,14 +1,7 @@
 import tensorflow as tf
 from tensorflow.keras.layers import Dense
 
-import os
-
-os.environ['CUDA_LAUNCH_BLOCKING'] = '1'
-USE_CUDA = tf.test.is_gpu_available(cuda_only=True)
-device = tf.device("cuda" if USE_CUDA else "cpu")
-
-SOS_token = 1  # Start-of-sentence token
-hidden_size = 500
+from helper import *
 
 
 class GreedySearchDecoder(tf.Module):

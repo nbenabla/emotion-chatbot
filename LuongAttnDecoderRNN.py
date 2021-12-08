@@ -3,6 +3,8 @@ from tensorflow.keras.layers import Dense, GRU
 from ECMWrapper import *
 from ECMGRU import *
 
+from helper import *
+
 class LuongAttnDecoderRNN(tf.Module):
     def __init__(self,embedding,static_emotion_embedding,emotion_embedding, hidden_size, output_size,device,ememory=None, n_layers=1, dropout=0.1,num_emotions = 7,batch_size = 64):
         super(LuongAttnDecoderRNN, self).__init__()

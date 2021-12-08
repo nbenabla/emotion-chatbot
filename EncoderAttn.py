@@ -2,6 +2,8 @@ import tensorflow as tf
 from tf.keras.layers import Bidirectional, Dense, GRU
 import numpy as np
 
+from helper import *
+
 class EncoderRNN(tf.Module):
     def __init__(self, hidden_size, embedding, n_layers=1, dropout=0):
         super(EncoderRNN, self).__init__()
