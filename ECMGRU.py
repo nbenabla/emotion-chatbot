@@ -5,7 +5,7 @@ import numpy as np
 import os
 
 
-class ECMGRU(tf.Module):
+class ECMGRU(tf.keras.Model):
     def __init__(self,hidden_size,static_emo_size,emo_size,n_layers = 1):
         '''
         Single layer GRU.
@@ -29,7 +29,7 @@ class ECMGRU(tf.Module):
 
         for i in range(n_layers):
             self._cell = tf.keras.layers.GRU(hidden_size, return_sequences=True)
-    def forward(self,step_input,last_hidden,emotion,internal_memory):
+    def call(self,step_input,last_hidden,emotion,internal_memory):
         '''
         step_input: X
         last_hidden: Hidden value from GRU

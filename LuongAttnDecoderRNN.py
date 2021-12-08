@@ -5,7 +5,7 @@ from ECMGRU import *
 
 from helper import *
 
-class LuongAttnDecoderRNN(tf.Module):
+class LuongAttnDecoderRNN(tf.keras.Model):
     def __init__(self,embedding,static_emotion_embedding,emotion_embedding, hidden_size, output_size,device,ememory=None, n_layers=1, dropout=0.1,num_emotions = 7,batch_size = 64):
         super(LuongAttnDecoderRNN, self).__init__()
         # Keep for reference
@@ -40,7 +40,7 @@ class LuongAttnDecoderRNN(tf.Module):
         self.alpha_layer = Dense(1, input_shape=(hidden_size,))
         # Luong eq 5 layer
         self.concat = Dense(hidden_size, input_shape=(hidden_size * 2,))
-    def forward(self, input_step, input_static_emotion, input_step_emotion, last_hidden
+    def call(self, input_step, input_static_emotion, input_step_emotion, last_hidden
                 ,input_context, encoder_outputs,last_rnn_output = None):
         '''
         Decoder with external memory.

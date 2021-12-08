@@ -3,7 +3,7 @@ from tensorflow.keras.layers import Dense
 import numpy as np
 
 
-class ECMWrapper(tf.Module):
+class ECMWrapper(tf.keras.Model):
     '''
     Internal memory module
     '''
@@ -32,7 +32,7 @@ class ECMWrapper(tf.Module):
         self.attn1 = Dense(self.hidden_size,input_shape=(self.hidden_size,))
         self.attn2 = Dense(self.hidden_size,input_shape=(self.hidden_size,))
         self.concat = Dense(1, input_shape=(self.hidden_size,))
-    def forward(self,word_input,decoder_output,static_emotion_input,emotion_input,context_input,last_hidden,memory):
+    def call(self,word_input,decoder_output,static_emotion_input,emotion_input,context_input,last_hidden,memory):
         '''
         Last hidden == prev_cell_state
         last word embedding = word_input

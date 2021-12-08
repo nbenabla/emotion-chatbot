@@ -4,7 +4,7 @@ import numpy as np
 
 from helper import *
 
-class EncoderRNN(tf.Module):
+class EncoderRNN(tf.keras.Model):
     def __init__(self, hidden_size, embedding, n_layers=1, dropout=0):
         super(EncoderRNN, self).__init__()
         self.n_layers = n_layers
@@ -16,7 +16,7 @@ class EncoderRNN(tf.Module):
         for i in range(n_layers):
             self.gru = tf.keras.layers.Bidirectional(GRU(hidden_size, dropout=(0 if n_layers == 1 else dropout), return_sequences=True))
 
-    def forward(self, input_seq, input_lengths, hidden=None):
+    def call(self, input_seq, input_lengths, hidden=None):
         # Convert word indexes to embeddings
         embedded = self.embedding(input_seq)
         # Pack padded batch of sequences for RNN module
@@ -32,7 +32,7 @@ class EncoderRNN(tf.Module):
 
 
 # Luong attention layer
-class Attn(tf.Module):
+class Attn(tf.keras.Model):
     def __init__(self, method, hidden_size):
         super(Attn, self).__init__()
         self.method = method
@@ -56,7 +56,7 @@ class Attn(tf.Module):
         energy = self.attn(tf.concat((hidden.expand(encoder_output.size(0), -1, -1), encoder_output), 2)).tanh()
         return tf.reduce_sum(self.v * energy, axis=2)
 
-    def forward(self, hidden, encoder_outputs):
+    def call(self, hidden, encoder_outputs):
         # Calculate the attention weights (energies) based on the given method
         if self.method == 'general':
             attn_energies = self.general_score(hidden, encoder_outputs)
