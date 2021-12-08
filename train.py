@@ -40,7 +40,7 @@ def train(input_variable, lengths, target_variable,target_variable_emotion,
     decoder_hidden = encoder_hidden[:decoder.n_layers]
     
     # Set initial context value,last_rnn_output, internal_memory
-    context_input = tf.zeros((num_samples, hidden_size), dtype=tf.float32, device=device) 
+    context_input = tf.zeros((num_samples, hidden_size), dtype=tf.float32) 
     # Determine if we are using teacher forcing this iteration
     if random.random() < teacher_forcing_ratio:
         use_teacher_forcing = True  

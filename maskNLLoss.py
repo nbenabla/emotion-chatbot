@@ -28,7 +28,7 @@ def maskNLLLoss_IMemory(inp, target, mask,M_emo,external_memory,alpha):
     else:
         external_memory_loss = tf.zeros(crossEntropy.shape,dtype=np.float32,device=device)
     #print(crossEntropy.masked_select(mask).mean(),internal_memory_loss.masked_select(mask).mean())
-    # not done
+    # TODO
     loss = crossEntropy.masked_select(mask).mean() + external_memory_loss.mean() + internal_memory_loss.mean()
     loss = loss.to(device)
     return loss, nTotal.item(),crossEntropy.masked_select(mask).mean().item()

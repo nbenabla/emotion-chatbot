@@ -21,17 +21,17 @@ class ECMWrapper(tf.Module):
         self.num_emotion = num_emotion
         self.device = device
         # read gate dimensions (word_embedding + hidden_input + context_input)
-        self.read_g = Dense(self.emo_size, input_shape=self.hidden_size + self.hidden_size + self.hidden_size)
+        self.read_g = Dense(self.emo_size, input_shape=(self.hidden_size + self.hidden_size + self.hidden_size,))
         # write gate
-        self.write_g = Dense(self.emo_size, input_shape= self.state_size)
+        self.write_g = Dense(self.emo_size, input_shape=(self.state_size,))
         # GRU output input dimensions = state_last + context + emotion emb + internal memory
         self.gru = gru
         self.emotion_embedding = emotion_embedding
         self.embedding = embedding
         # attention layer
-        self.attn1 = Dense(self.hidden_size,input_shape=self.hidden_size)
-        self.attn2 = Dense(self.hidden_size,input_shape=self.hidden_size)
-        self.concat = Dense(1, input_shape=self.hidden_size)
+        self.attn1 = Dense(self.hidden_size,input_shape=(self.hidden_size,))
+        self.attn2 = Dense(self.hidden_size,input_shape=(self.hidden_size,))
+        self.concat = Dense(1, input_shape=(self.hidden_size,))
     def forward(self,word_input,decoder_output,static_emotion_input,emotion_input,context_input,last_hidden,memory):
         '''
         Last hidden == prev_cell_state
@@ -66,14 +66,14 @@ class ECMWrapper(tf.Module):
         '''
         Compute context
         '''
-        rnn_output = rnn_output.unsqueeze(dim=-2).squeeze(0) # make shape (batch,1,hidden_size)
+        rnn_output = tf.squeeze(tf.expand_dims(rnn_output, axis=-2), axis=0) # make shape (batch,1,hidden_size)
         memory = memory.permute(1,0,2)
         Wq = self.attn1(rnn_output)
         Wm = self.attn2(memory)
-        concat = (Wq + Wm).tanh()
-        e = self.concat(concat).squeeze(2)
+        concat = tf.nn.tanh(Wq + Wm)
+        e = tf.squeeze(self.concat(concat),axis=2)
         attn_score = tf.expand_dims(tf.nn.softmax(e,axis = 1),axis=1)
-        context = tf.linalg.matmul(attn_score,memory).squeeze(1)
+        context = tf.squeeze(tf.linalg.matmul(attn_score,memory),axis=1)
         return tf.expand_dims(context,axis=0)
     def _read_internal_memory(self,read_inputs,emotion_input):
         """

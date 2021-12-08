@@ -341,3 +341,6 @@ pairs = pairs[:-50]
 pairs_emotion = pairs_emotion[:-50]
 test_pairs = pairs[-50:]
 test_pairs_emotion = pairs_emotion[-50:]
+
+def get_all():
+    return test_batch, pairs, pairs_emotion, test_pairs, test_pairs_emotion

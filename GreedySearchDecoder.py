@@ -20,17 +20,17 @@ class GreedySearchDecoder(tf.Module):
         # Prepare encoder's final hidden layer to be first hidden input to the decoder
         decoder_hidden = encoder_hidden[:self.decoder.n_layers]
         # Initialize decoder input with SOS_token
-        decoder_input = tf.ones((1, 1), device=device, dtype=tf.int64) * SOS_token
+        decoder_input = tf.ones((1, 1),dtype=tf.int64) * SOS_token
         # Initialize tensors to append decoded words to
-        all_tokens = tf.zeros([0], device=device, dtype=tf.int64)
-        all_scores = tf.zeros([0], device=device)
+        all_tokens = tf.zeros([0], dtype=tf.int64)
+        all_scores = tf.zeros([0])
         # Set initial context value,last_rnn_output, internal_memory
-        context_input = tf.zeros((1, hidden_size), dtype=tf.float32, device=self.decoder.device) 
-        context_input = context_input.to(device)  
+        context_input = tf.zeros((1, hidden_size), dtype=tf.float32) 
+        # context_input = context_input.to(device)  
         rnn_output = None
         # keep a copy of emotional category for static emotion embedding
         static_emotion = target_emotions
-        static_emotion = static_emotion.to(device)  
+        # static_emotion = static_emotion.to(device)  
         # Iteratively decode one word token at a time
         for _ in range(max_length):
             # Forward pass through decoder

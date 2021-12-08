@@ -40,9 +40,9 @@ class Attn(tf.Module):
             raise ValueError(self.method, "is not an appropriate attention method.")
         self.hidden_size = hidden_size
         if self.method == 'general':
-            self.attn = Dense(hidden_size,input_shape=self.hidden_size)
+            self.attn = Dense(hidden_size,input_shape=(self.hidden_size,))
         elif self.method == 'concat':
-            self.attn = Dense(hidden_size,input_shape=self.hidden_size * 2)
+            self.attn = Dense(hidden_size,input_shape=(self.hidden_size * 2,))
             self.v = tf.Variable(tf.Tensor(hidden_size, dtype=np.float32))
 
     def dot_score(self, hidden, encoder_output):

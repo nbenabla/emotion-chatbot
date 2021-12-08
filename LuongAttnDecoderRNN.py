@@ -21,7 +21,7 @@ class LuongAttnDecoderRNN(tf.Module):
         # define emotion embedding
         self.emotion_cat_embedding = static_emotion_embedding
         self.emotion_embedding = emotion_embedding # for internal memory
-        self.embedding_dropout = tf.nn.Dropout(dropout)
+        self.embedding_dropout = tf.keras.layers.Dropout(dropout)
         #self.emotion_embedding_dropout = nn.Dropout(dropout)
         # dimension
         #self.gru = nn.GRU(hidden_size + hidden_size + hidden_size, hidden_size, n_layers, dropout=(0 if n_layers == 1 else dropout))
@@ -33,13 +33,13 @@ class LuongAttnDecoderRNN(tf.Module):
         # read external from outside
         self.external_memory = ememory
         # generic output linear layer
-        self.generic_word_output_layer = Dense(output_size, input_shape=self.hidden_size)
+        self.generic_word_output_layer = Dense(output_size, input_shape=(self.hidden_size,))
         # emotional output linear layer 
-        self.emotion_word_output_layer = Dense(output_size, input_shape=self.hidden_size)
+        self.emotion_word_output_layer = Dense(output_size, input_shape=(self.hidden_size,))
         # emotional gate/ choice layer
-        self.alpha_layer = Dense(1, input_shape=hidden_size)
+        self.alpha_layer = Dense(1, input_shape=(hidden_size,))
         # Luong eq 5 layer
-        self.concat = Dense(hidden_size, input_shape=hidden_size * 2)
+        self.concat = Dense(hidden_size, input_shape=(hidden_size * 2,))
     def forward(self, input_step, input_static_emotion, input_step_emotion, last_hidden
                 ,input_context, encoder_outputs,last_rnn_output = None):
         '''
@@ -63,22 +63,22 @@ class LuongAttnDecoderRNN(tf.Module):
             # Project hidden output to distribution.
             generic_output = self.generic_word_output_layer(concat_output)
             emotion_output = self.emotion_word_output_layer(concat_output)
-            generic_output = generic_output.squeeze(0)
-            emotion_output = emotion_output.squeeze(0)
+            generic_output = tf.squeeze(generic_output,axis=0)
+            emotion_output = tf.squeeze(emotion_output,axis=0)
             # external memory gate
             g = tf.math.sigmoid(self.alpha_layer(concat_output))
             output_g = tf.nn.softmax(generic_output,dim = 1) * (1 - g)
             output_e = tf.nn.softmax(emotion_output,dim = 1) * g
             output = output_g + output_e # output distribution
-            output = output.squeeze(0)
+            output = tf.squeeze(output,axis=0)
             g = tf.concat([(1 - g),g],dim = -1) # gate distribution
-            g = g.squeeze(0)
+            g = tf.squeeze(g, axis=0)
         else:
             # Predict next word using Luong eq. 6
-            output = self.out(concat_output).squeeze(0)
+            output = tf.squeeze(self.out(concat_output), axis=0)
             # generic output
             output = tf.nn.softmax(output, 1)
-            output = output.squeeze(0)
+            output = tf.squeeze(output, axis=0)
             g = None
         # Return output and final hidden state
         return output, hidden, new_M_emo, context,concat_output,g

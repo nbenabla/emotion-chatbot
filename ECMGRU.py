@@ -14,15 +14,15 @@ class ECMGRU(tf.Module):
         # first layer of special GRU
         self.hidden_size = hidden_size
         # these three linear layer compute output from emotion/internal memory 
-        self.emotion_u = Dense(hidden_size, input_shape=static_emo_size + emo_size)
-        self.emotion_r = Dense(hidden_size, input_shape=static_emo_size + emo_size)
-        self.emotion_c = Dense(hidden_size, input_shape=static_emo_size + emo_size)
+        self.emotion_u = Dense(hidden_size, input_shape=(static_emo_size + emo_size,))
+        self.emotion_r = Dense(hidden_size, input_shape=(static_emo_size + emo_size,))
+        self.emotion_c = Dense(hidden_size, input_shape=(static_emo_size + emo_size,))
         # these two are generic GRU output that takes [step_input, last_hidden]
-        self.generic_u = Dense(hidden_size, input_shape=hidden_size + hidden_size + hidden_size + emo_size)
-        self.generic_r = Dense(hidden_size, input_shape=hidden_size + hidden_size + hidden_size + emo_size)
+        self.generic_u = Dense(hidden_size, input_shape=(hidden_size + hidden_size + hidden_size + emo_size,))
+        self.generic_r = Dense(hidden_size, input_shape=(hidden_size + hidden_size + hidden_size + emo_size,))
         
         # gate value computation
-        self.generic_c = Dense(hidden_size, input_shape=hidden_size + hidden_size + hidden_size + emo_size)
+        self.generic_c = Dense(hidden_size, input_shape=(hidden_size + hidden_size + hidden_size + emo_size,))
         self.n_layers = n_layers
         # starting from second layer, using the normal GRU
         # self._cell = tf.keras.layers.GRU(hidden_size, num_layers = n_layers - 1)
@@ -38,7 +38,8 @@ class ECMGRU(tf.Module):
         '''
         # compute based on the first layer
         hidden_0 = tf.expand_dims(last_hidden[0], axis= 0)
-        internal_memory = internal_memory.squeeze(dim = 0)
+        internal_memory = tf.squeeze(internal_memory, axis= 0)
+
         emotion_input = tf.concat([emotion,internal_memory],-1)
         # compute emotion gate value
         _u = self.emotion_u(emotion_input) # update gate
