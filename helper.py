@@ -109,3 +109,12 @@ def batch2TrainData(voc, index, pairs, pairs_emotion):
     input_batch_emotion = emotion_tensor(input_batch_emotion)
     output_batch_emotion = emotion_tensor(output_batch_emotion)
     return inp,input_batch_emotion, lengths, output,output_batch_emotion, mask, max_target_len
+
+def sentenceFromIdx(idx,voc):
+    output = []
+    for num,i in enumerate(idx):
+        if num > 0 and idx[num] == idx[num - 1] and i == 2:
+            continue
+        output.append(voc.index2word[i])
+        
+    return ' '.join(output)
