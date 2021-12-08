@@ -31,17 +31,18 @@ class BeamSearchDecoder(tf.Module):
         all_scores = tf.zeros([0], device=device)
         all_scores_array = tf.zeros((1, self.num_word), device=device, dtype=tf.float32)
         # Set initial context value,last_rnn_output, internal_memory
-        context_input = torch.FloatTensor(1,hidden_size) # TODO: Find alternative
+        context_input = tf.zeros((1, hidden_size), dtype=tf.float32) 
         context_input = context_input.to(device)
-        # last_rnn_output = torch.FloatTensor(hidden_size)
-        internal_memory = torch.FloatTensor(batch_size, hidden_size) # TODO: Same as above + not sure where batch_size is declared
-        internal_memory = internal_memory.to(device)
+        rnn_output = None
+        # keep a copy of emotional category for static emotion embedding
+        static_emotion = target_emotion
+        static_emotion = static_emotion.to(device)
         # Iteratively decode one word token at a time
         for _ in range(max_length):
             # Forward pass through decoder
-            decoder_output, decoder_hidden,internal_memory,context_input = self.decoder(
-                decoder_input,target_emotions, decoder_hidden,
-                context_input, internal_memory,encoder_outputs
+            decoder_output, decoder_hidden, target_emotions, context_input, rnn_output, g = self.decoder(
+                decoder_input,static_emotion,target_emotions, decoder_hidden,
+                context_input, encoder_outputs, rnn_output
             )
             # Obtain most likely word token and its softmax score
             decoder_scores, decoder_input = tf.reduce_max(decoder_output, reduction_indices=[1])
@@ -49,8 +50,8 @@ class BeamSearchDecoder(tf.Module):
             # Record token and score
             all_tokens = tf.concat([all_tokens, decoder_input], 0)
             all_scores = tf.concat([all_scores, decoder_scores], 0)
-            all_scores_array = tf.concat([all_scores_array,decoder_output], 0)
-            all_words_order = tf.concat([all_words_order,decoder_input_order], 0)
+            all_scores_array = tf.concat([all_scores_array, decoder_output], 0)
+            all_words_order = tf.concat([all_words_order, decoder_input_order], 0)
             # Prepare current token to be next decoder input (add a dimension)
             decoder_input = tf.expand_dims(decoder_input, axis=0)
         # Return collections of word tokens and scores
@@ -67,7 +68,7 @@ class BeamSearchDecoder(tf.Module):
             for i in range(len(sequences)):
                 seq, score = sequences[i]
                 for j in range(len(row)):
-                    candidate = [seq + [j], score * -np.log(row[j] + 1e-8)]
+                    candidate = [seq + [j], score - np.log(row[j] + 1e-8)]
                     all_candidates.append(candidate)
             # order all candidates by score
             ordered = sorted(all_candidates, key=lambda tup:tup[1])

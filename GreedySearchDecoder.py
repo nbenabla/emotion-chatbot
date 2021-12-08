@@ -32,21 +32,21 @@ class GreedySearchDecoder(tf.Module):
         all_tokens = tf.zeros([0], device=device, dtype=tf.int64)
         all_scores = tf.zeros([0], device=device)
         # Set initial context value,last_rnn_output, internal_memory
-        context_input = torch.FloatTensor(1, hidden_size)  # TODO Not sure what the exact alternative should be
+        context_input = tf.zeros((1, hidden_size), dtype=tf.float32, device=self.decoder.device) 
         context_input = context_input.to(device)  
-        # last_rnn_output = torch.FloatTensor(hidden_size)
-        internal_memory = torch.FloatTensor(batch_size, hidden_size)  # TODO Same as above + not sure where batch_size is declared
-        internal_memory = internal_memory.to(device)  
+        rnn_output = None
+        # keep a copy of emotional category for static emotion embedding
+        static_emotion = target_emotions
+        static_emotion = static_emotion.to(device)  
         # Iteratively decode one word token at a time
         for _ in range(max_length):
             # Forward pass through decoder
-            decoder_output, decoder_hidden, internal_memory, context_input = self.decoder(
-                decoder_input, target_emotions, decoder_hidden,
-                context_input, internal_memory, encoder_outputs
+            decoder_output, decoder_hidden, target_emotions, context_input, rnn_output, g = self.decoder(
+                decoder_input, static_emotion, target_emotions, decoder_hidden,
+                context_input, encoder_outputs, rnn_output
             )
             # Obtain most likely word token and its softmax score
-            decoder_scores, decoder_input = tf.reduce_max(
-                decoder_output, reduction_indices=[1])
+            decoder_scores, decoder_input = tf.reduce_max(decoder_output, reduction_indices=[1])
             # Record token and score
             all_tokens = tf.concat([all_tokens, decoder_input], 0)
             all_scores = tf.concat([all_scores, decoder_scores], 0)
